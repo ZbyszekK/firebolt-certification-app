@@ -206,18 +206,21 @@ function pushReportToS3(report) {
       const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
-      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
+      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL; // + prefix + '-' + reportName + '.json';
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
     }
+
+    // Print report to copnsole
+    console.log('REPORT: ', report);
 
     logger.info('URL: ' + restApiUrl, 'pushReportToS3');
     request.open('POST', restApiUrl);
     request.setRequestHeader('content-type', 'application/json');
 
     // CORS headers - Disable CORS verification by uncommenting below lines
-    // request.setRequestHeader("Access-Control-Allow-Origin","*")
-    // request.setRequestHeader('Access-Control-Allow-Methods','POST,OPTIONS');
-    // request.setRequestHeader('Access-Control-Allow-Headers','Origin, Content-Type');
+    request.setRequestHeader("Access-Control-Allow-Origin","*")
+    request.setRequestHeader('Access-Control-Allow-Methods','POST,OPTIONS');
+    request.setRequestHeader('Access-Control-Allow-Headers','Origin, Content-Type');
 
     request.send(report);
     request.onload = () => {
